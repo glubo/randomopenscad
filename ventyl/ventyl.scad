@@ -31,7 +31,6 @@ module ventyl() {
                 cube([cellWidth, cellWidth, valveHeight], center = true);
             cylinder(valveHeight + D, valveBigR, outputInnerR, false);
         };
-
     translate([0, 0, chamberHeight - wallThickness])
         difference() {
             translate([0, 0, wallThickness / 2])
@@ -93,7 +92,7 @@ module spuntik() {
     spuntBigR = outputInnerR + (2 * t * diff);
 
     translate([0, 0, valveHeight * 2 * t - D])
-        cylinder(valveHeight * t, spuntBigR, outputInnerR + t * diff);
+        cylinder(valveHeight * t *2, spuntBigR, (outputInnerR + t * diff)*(0.84));
     difference() {
         cylinder(valveHeight * 2 * t, spuntBigR, spuntBigR);
         cylinder(valveHeight * t, rodRadius);
@@ -119,13 +118,26 @@ module bocnice() {
         cube([wallThickness, cellWidth, chamberHeight + wallThickness], center = true);
 }
 
+module prepazky() {
+        for (i = [1:I - 1]) {
+            translate([cellWidth * (i-0.5), 0, chamberHeight*5/6.0 ])
+                cube([wallThickness/3.0, cellWidth, chamberHeight/3.0], center = true);
+        }
+}
+
 module botPredkus() {
     translate([cellWidth / 2 * (I - 1), cellWidth / 2, 0])
         cube([cellWidth * I, wallThickness, wallThickness], center = true);
 }
 module topPredkus() {
-    translate([cellWidth / 2 * (I - 1), cellWidth / 2, chamberHeight])
-        cube([cellWidth * I, wallThickness, wallThickness], center = true);
+    difference() {
+        translate([cellWidth / 2 * (I - 1), cellWidth / 2, chamberHeight])
+            cube([cellWidth * I, wallThickness, wallThickness], center = true);
+        for (i = [0:I - 1]) {
+            translate([cellWidth * i, 0, chamberHeight - wallThickness])
+                cylinder(wallThickness + D, cellWidth / 2 + wallThickness / 2, valveBigR, false);
+        }
+    }
 }
 module ventyly() {
     for (i = [0:I - 1]) {
@@ -139,6 +151,7 @@ module ventyly() {
 
     zadnistena();
     bocnice();
+    prepazky();
     botPredkus();
     topPredkus();
 }
@@ -175,7 +188,8 @@ module konektor() {
     }
 }
 //telo();
+//translate([-30,0,0])
 //spuntik();
-//ventyly();
-konektor();
+ventyly();
+//konektor();
 //bublik();
