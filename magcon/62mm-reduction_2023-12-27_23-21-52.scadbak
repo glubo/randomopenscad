@@ -1,0 +1,61 @@
+$fa = 1;
+$fs = 0.4;
+D = 0.001;
+t = 0.3333333333333;
+
+smallOuterDia = 63.5;
+smallOuterR = smallOuterDia/2;
+wallThickness = 2;
+smallHeight = 10;
+
+connectorHeight  = 20;
+bigZ = smallHeight+connectorHeight;
+bigOuterDia = 133;
+bigOuterR = bigOuterDia/2;
+bigInnerDia = 100;
+bigInnerR = bigInnerDia/2;
+bigHeight = 10;
+
+diff = smallOuterR-bigInnerR+wallThickness;
+
+
+
+module small() {
+translate([diff,0,0])
+	difference() {
+		cylinder(smallHeight, smallOuterR+wallThickness, smallOuterR+wallThickness);
+		translate([0,0,-D])
+		cylinder(smallHeight+2*D, smallOuterR, smallOuterR);
+	}
+}
+
+
+module big() {
+translate([0,0,bigZ])
+	difference() {
+		cylinder(bigHeight, bigOuterR, bigOuterR);
+		translate([0,0,-D])
+		cylinder(bigHeight+2*D, bigInnerR, bigInnerR);
+	}
+}
+
+module connector() {
+translate([0,0,smallHeight])
+	difference() {
+		union() {
+			translate([diff,0,0])
+					cylinder(connectorHeight, smallOuterR+wallThickness, smallOuterR+wallThickness);
+			cylinder(connectorHeight, 1, bigOuterR);
+		}
+translate([0,0,-D])
+		union() {
+			translate([diff,0,0])
+					cylinder(connectorHeight+2*D, smallOuterR, smallOuterR);
+			cylinder(connectorHeight+2*D, 1, bigInnerR);
+		}
+	}
+}
+
+small();
+big();
+connector();
