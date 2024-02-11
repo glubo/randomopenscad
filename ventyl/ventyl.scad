@@ -12,7 +12,8 @@ outputOuterR = 4;
 spuntikHeight = 10;
 connectorHeight = 15;
 konektorWidth = 28;
-I = 12;
+I = 3;
+slack = 1.05;
 
 use <MCAD/boxes.scad>;
 
@@ -50,17 +51,20 @@ module ventyl() {
 }
 
 
+module octa(R, height) {
+    intersection() {
+        rotate([0, 0, 45])
+            cube([R, R, height], center = true);
+        translate([0, 0, 0])
+            cube([R, R, height], center = true);
+
+    }
+}
 
 
 module podpory() {
     module aaa() {
-        intersection() {
-            rotate([0, 0, 45])
-                cube([wallThickness, wallThickness, chamberHeight + wallThickness], center = true);
-            translate([0, 0, 0])
-                cube([wallThickness, wallThickness, chamberHeight + wallThickness], center = true);
-
-        }
+        octa(wallThickness, chamberHeight+wallThickness);
     }
     translate([-cellWidth / 2, -cellWidth / 2, chamberHeight / 2])
         aaa();
@@ -105,11 +109,15 @@ module spuntik() {
         }
 }
 
+module stena() {
+        cube([cellWidth * I, wallThickness, chamberHeight + wallThickness], center = true);
+}
 
 module zadnistena() {
     translate([cellWidth / 2 * (I - 1), -cellWidth / 2, chamberHeight / 2])
-        cube([cellWidth * I, wallThickness, chamberHeight + wallThickness], center = true);
+        stena();
 }
+
 
 module bocnice() {
     translate([cellWidth * (I - 0.5), 0, chamberHeight / 2])
@@ -168,12 +176,18 @@ module bublik() {
 }
 
 module konektor() {
-    #difference() {
+    difference() {
         union() {
             translate([0, 0, 2.5])
                 roundedBox([konektorWidth, konektorWidth, 5], 5, true);
-            translate([0, 0, 5])
-                roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, 2.5], 5, true);
+            translate([0, 0, wallThickness])
+                roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, wallThickness], 5, true);
+
+            translate([0, 0, wallThickness*1.5])
+                intersection() {
+                    roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, wallThickness*2], 5, true);
+                    roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, wallThickness*2], wallThickness, false);
+                }
             translate([0, 0, konektorWidth / 2])
                 roundedBox([konektorWidth, konektorWidth, konektorWidth], 5, false);
             translate([0, 10, 18])
@@ -187,9 +201,34 @@ module konektor() {
 
     }
 }
-//telo();
-//translate([-30,0,0])
+
+module prikryvkaMinus() {
+    for (i = [0:I ]) {
+        echo(i);
+        translate([cellWidth * i, 0, 0])
+            union() {
+                translate([-cellWidth / 2, 0, 0])
+                octa(wallThickness*slack, chamberHeight+wallThickness+D);
+            }
+    };
+    translate([cellWidth / 2 * (I - 1), 0, chamberHeight*0.5])
+        cube([cellWidth * I+D, wallThickness, wallThickness*slack], center = true);
+    translate([cellWidth / 2 * (I - 1), 0, chamberHeight*-0.5])
+        cube([cellWidth * I +D, wallThickness, wallThickness*slack], center = true);
+}
+
+module prikryvka() {
+    difference() {
+        translate([cellWidth / 2 * (I - 1), 0, 0])
+            stena();
+
+        translate([0,wallThickness *0.5,0])
+            prikryvkaMinus();
+    }
+}
+
 //spuntik();
-ventyly();
-//konektor();
-//bublik();
+//ventyly();
+konektor();
+
+//prikryvka();
