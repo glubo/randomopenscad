@@ -12,7 +12,7 @@ outputOuterR = 4;
 spuntikHeight = 10;
 connectorHeight = 15;
 konektorWidth = 28;
-I = 3;
+I = 12;
 slack = 1.05;
 
 use <MCAD/boxes.scad>;
@@ -196,7 +196,6 @@ module konektor() {
         translate([0, 0, 10])
             roundedBox([konektorWidth - wallThickness, konektorWidth - wallThickness, konektorWidth], 5, true);
         translate([0, 10, 18])
-            rotate([-90, 0, 0])
                 cylinder(30, 4, 4);
 
     }
@@ -208,13 +207,16 @@ module prikryvkaMinus() {
         translate([cellWidth * i, 0, 0])
             union() {
                 translate([-cellWidth / 2, 0, 0])
-                octa(wallThickness*slack, chamberHeight+wallThickness+D);
+                octa(wallThickness*slack, chamberHeight+D);
             }
     };
     translate([cellWidth / 2 * (I - 1), 0, chamberHeight*0.5])
         cube([cellWidth * I+D, wallThickness, wallThickness*slack], center = true);
     translate([cellWidth / 2 * (I - 1), 0, chamberHeight*-0.5])
         cube([cellWidth * I +D, wallThickness, wallThickness*slack], center = true);
+    translate([konektorWidth*0.5, -wallThickness*0.5, 0])
+        rotate([-90, 0, 0])
+            roundedBox([konektorWidth+0.05, konektorWidth+0.05, wallThickness  *2], 5, true);
 }
 
 module prikryvka() {
@@ -229,6 +231,6 @@ module prikryvka() {
 
 //spuntik();
 //ventyly();
-konektor();
+//konektor();
 
-//prikryvka();
+prikryvka();
