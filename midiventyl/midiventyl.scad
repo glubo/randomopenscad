@@ -4,8 +4,11 @@ D = 0.001;
 t = 0.3333333333333;
 rodRadius = 3.1;
 wallThickness = 3;
-cellWidth = 12.5;
-chamberHeight = 50;
+cellWidth = 20;
+chamberHeight = 80;
+solenoidBottomScrewFromTop = 43;
+solenoidBottomScrewDistance = 15;
+solenoidScrewR = 1;
 valveHeight = 5;
 outputInnerR = 3;
 outputOuterR = 4;
@@ -24,10 +27,7 @@ valveBigR = cellWidth / 2 - wallThickness / 2;
 
 
 module ventyl() {
-    difference() {
-        cube([cellWidth, cellWidth, wallThickness], center = true);
-        cylinder(h = wallThickness + D, r = rodRadius, center = true);
-    }
+    cube([cellWidth, cellWidth, wallThickness], center = true);
     translate([0, 0, chamberHeight])
         difference() {
             translate([0, 0, valveHeight / 2])
@@ -115,7 +115,21 @@ module spuntik() {
 }
 
 module stena() {
+    difference() {
         cube([cellWidth * I, wallThickness, chamberHeight + wallThickness], center = true);
+        translate([cellWidth * (I * 0.5 - 0.5), 0, 0])
+            for (i = [0:I - 1]) {
+                translate([-i * cellWidth, wallThickness, (chamberHeight + wallThickness) * 0.5 - solenoidBottomScrewFromTop])
+                    union() {
+                        rotate([90, 0, 0])
+                            cylinder(h = 2 * wallThickness, r = solenoidScrewR);
+                        translate([0, 0, solenoidBottomScrewDistance])
+                            rotate([90, 0, 0])
+                                cylinder(h = 2 * wallThickness, r = solenoidScrewR);
+                    }
+            }
+
+    }
 }
 
 module zadnistena() {
@@ -234,8 +248,9 @@ module prikryvka() {
     }
 }
 
-spuntik();
-// ventyly();
-//konektor();
+// spuntik();
+ventyly();
+// konektor();
+// stena();
 
 // prikryvka();
