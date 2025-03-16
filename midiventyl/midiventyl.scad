@@ -1,5 +1,5 @@
 $fa = 1;
-$fs = 0.1;
+$fs = 0.3;
 D = 0.001;
 t = 0.3333333333333;
 rodRadius = 3.1;
@@ -17,6 +17,11 @@ spuntikDiraHeight = 5;
 spuntikDiraRadius = 1;
 connectorHeight = 15;
 konektorWidth = 28;
+kabelyHeight = 2;
+kabelyWidth = 12;
+kabelyOffsetHeight = 10;
+kabelyOffsetWidth = 2;
+
 I = 3;
 slack = 1.05;
 
@@ -117,17 +122,17 @@ module spuntik() {
 module stena() {
     difference() {
         cube([cellWidth * I, wallThickness, chamberHeight + wallThickness], center = true);
-        translate([cellWidth * (I * 0.5 - 0.5), 0, 0])
-            for (i = [0:I - 1]) {
-                translate([-i * cellWidth, wallThickness, (chamberHeight + wallThickness) * 0.5 - solenoidBottomScrewFromTop])
-                    union() {
-                        rotate([90, 0, 0])
-                            cylinder(h = 2 * wallThickness, r = solenoidScrewR);
-                        translate([0, 0, solenoidBottomScrewDistance])
-                            rotate([90, 0, 0])
-                                cylinder(h = 2 * wallThickness, r = solenoidScrewR);
-                    }
-            }
+        // translate([cellWidth * (I * 0.5 - 0.5), 0, 0])
+        //     for (i = [0:I - 1]) {
+        //         translate([-i * cellWidth, wallThickness, (chamberHeight + wallThickness) * 0.5 - solenoidBottomScrewFromTop])
+        //             union() {
+        //                 rotate([90, 0, 0])
+        //                     cylinder(h = 2 * wallThickness, r = solenoidScrewR);
+        //                 translate([0, 0, solenoidBottomScrewDistance])
+        //                     rotate([90, 0, 0])
+        //                         cylinder(h = 2 * wallThickness, r = solenoidScrewR);
+        //             }
+        //     }
 
     }
 }
@@ -215,6 +220,7 @@ module konektor() {
         translate([0, 0, 10])
             roundedBox([konektorWidth - wallThickness, konektorWidth - wallThickness, konektorWidth], 5, true);
         translate([0, 10, 18])
+            rotate([-90, 0, 0])
                 cylinder(30, 4, 4);
 
     }
@@ -236,6 +242,9 @@ module prikryvkaMinus() {
     translate([konektorWidth*0.5, -wallThickness*0.5, 0])
         rotate([-90, 0, 0])
             roundedBox([konektorWidth+0.05, konektorWidth+0.05, wallThickness  *2], 5, true);
+
+    translate([cellWidth * (I-1) - kabelyOffsetWidth, 0, chamberHeight*-0.5 + kabelyOffsetHeight])
+        cube([kabelyWidth, wallThickness*3, kabelyHeight], center = true);
 }
 
 module prikryvka() {
@@ -248,8 +257,8 @@ module prikryvka() {
     }
 }
 
-// spuntik();
-ventyly();
+ spuntik();
+// ventyly();
 // konektor();
 // stena();
 
