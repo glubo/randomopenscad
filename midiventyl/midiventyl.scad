@@ -6,17 +6,18 @@ rodRadius = 3.1;
 wallThickness = 3;
 cellWidth = 20;
 chamberHeight = 80;
-solenoidBottomScrewFromTop = 43;
+solenoidBottomScrewFromTop = 41;
 solenoidBottomScrewDistance = 15;
 solenoidScrewR = 1;
 valveHeight = 5;
-outputInnerR = 3;
-outputOuterR = 4;
+outputInnerR = 4;
+outputOuterR = 5;
 spuntikHeight = 10;
 spuntikDiraHeight = 5;
 spuntikDiraRadius = 1;
 connectorHeight = 15;
 konektorWidth = 28;
+konektorWidthInner = konektorWidth - 1;
 kabelyHeight = 2;
 kabelyWidth = 12;
 kabelyOffsetHeight = 10;
@@ -122,17 +123,17 @@ module spuntik() {
 module stena() {
     difference() {
         cube([cellWidth * I, wallThickness, chamberHeight + wallThickness], center = true);
-        // translate([cellWidth * (I * 0.5 - 0.5), 0, 0])
-        //     for (i = [0:I - 1]) {
-        //         translate([-i * cellWidth, wallThickness, (chamberHeight + wallThickness) * 0.5 - solenoidBottomScrewFromTop])
-        //             union() {
-        //                 rotate([90, 0, 0])
-        //                     cylinder(h = 2 * wallThickness, r = solenoidScrewR);
-        //                 translate([0, 0, solenoidBottomScrewDistance])
-        //                     rotate([90, 0, 0])
-        //                         cylinder(h = 2 * wallThickness, r = solenoidScrewR);
-        //             }
-        //     }
+         translate([cellWidth * (I * 0.5 - 0.5), 0, 0])
+             for (i = [0:I - 1]) {
+                 translate([-i * cellWidth, wallThickness, (chamberHeight + wallThickness) * 0.5 - solenoidBottomScrewFromTop])
+                     union() {
+                         rotate([90, 0, 0])
+                             cylinder(h = 2 * wallThickness, r = solenoidScrewR);
+                         translate([0, 0, solenoidBottomScrewDistance])
+                             rotate([90, 0, 0])
+                                 cylinder(h = 2 * wallThickness, r = solenoidScrewR);
+                     }
+             }
 
     }
 }
@@ -203,22 +204,22 @@ module konektor() {
     difference() {
         union() {
             translate([0, 0, 2.5])
-                roundedBox([konektorWidth, konektorWidth, 5], 5, true);
+                roundedBox([konektorWidthInner, konektorWidthInner, 5], 5, true);
             translate([0, 0, wallThickness])
-                roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, wallThickness], 5, true);
+                roundedBox([konektorWidthInner + wallThickness, konektorWidthInner + wallThickness, wallThickness], 5, true);
 
             translate([0, 0, wallThickness*1.5])
                 intersection() {
-                    roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, wallThickness*2], 5, true);
-                    roundedBox([konektorWidth + wallThickness, konektorWidth + wallThickness, wallThickness*2], wallThickness, false);
+                    roundedBox([konektorWidthInner + wallThickness, konektorWidthInner + wallThickness, wallThickness*2], 5, true);
+                    roundedBox([konektorWidthInner + wallThickness, konektorWidthInner + wallThickness, wallThickness*2], wallThickness, false);
                 }
-            translate([0, 0, konektorWidth / 2])
-                roundedBox([konektorWidth, konektorWidth, konektorWidth], 5, false);
+            translate([0, 0, konektorWidthInner / 2])
+                roundedBox([konektorWidthInner, konektorWidthInner, konektorWidthInner], 5, false);
             translate([0, 10, 18])
                 bublik();
         };
         translate([0, 0, 10])
-            roundedBox([konektorWidth - wallThickness, konektorWidth - wallThickness, konektorWidth], 5, true);
+            roundedBox([konektorWidthInner - wallThickness, konektorWidthInner - wallThickness, konektorWidthInner], 5, true);
         translate([0, 10, 18])
             rotate([-90, 0, 0])
                 cylinder(30, 4, 4);
@@ -257,9 +258,9 @@ module prikryvka() {
     }
 }
 
- spuntik();
+// spuntik();
 // ventyly();
-// konektor();
+konektor();
 // stena();
 
 // prikryvka();
